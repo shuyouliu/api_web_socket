@@ -5,10 +5,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import org.glassfish.jersey.media.multipart.FormDataMultiPart;
+import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -44,4 +47,14 @@ public class IndexController {
 		list.add("status:" + status);
 		return list;
 	}
+
+	@POST
+	// @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_ATOM_XML })
+	// @Consumes(MediaType.MULTIPART_FORM_DATA)
+	@Path("test")
+	public String getTest(@FormDataParam("apiKey") String apiKey, @FormDataParam("text") String text,
+			@FormDataParam("subject") String subject, FormDataMultiPart form) {
+		return "";
+	}
+
 }

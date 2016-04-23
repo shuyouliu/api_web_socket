@@ -5,8 +5,6 @@ import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.server.spring.scope.RequestContextFilter;
 
-import cn.shuyouliu.liusy.action.IndexController;
-
 /**
  * Registers the components to be used by the JAX-RS application
  * 
@@ -19,10 +17,9 @@ public class RegisterApplication extends ResourceConfig {
 	 * Register JAX-RS application components.
 	 */
 	public RegisterApplication() {
+		packages("cn.shuyouliu.liusy.action");
 		register(RequestContextFilter.class);
-		register(IndexController.class);
 		register(JacksonFeature.class);
-		// final ResourceConfig resourceConfig = new ResourceConfig(MultiPartResource.class);
 		register(MultiPartFeature.class);
 
 	}
