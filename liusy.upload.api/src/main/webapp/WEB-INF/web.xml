@@ -14,7 +14,7 @@
 		<param-name>contextConfigLocation</param-name>
 		<param-value>classpath:spring/applicationContext.xml</param-value>
 	</context-param>
- 
+  
 	<servlet>
 		<servlet-name>jersey-serlvet</servlet-name>
 		<servlet-class>
