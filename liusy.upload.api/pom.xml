@@ -9,7 +9,7 @@
 	</parent>
 	<artifactId>liusy.upload.api</artifactId>
 	<packaging>war</packaging>
-	<name>liusy</name>
+	<name>liusy.upload.api</name>
 	<url>http://maven.apache.org</url>
 
 

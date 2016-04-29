@@ -44,10 +44,22 @@ public class IndexController {
 	public List<String> getStatus() {
 		String status = LiusySocketServer.getLss().getStatus();
 		List<String> list = new ArrayList<String>();
-		list.add("status:" + status);
+		list.add("v1 status:" + status);
 		return list;
 	}
 
+	@GET
+	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_ATOM_XML })
+	@Path("stop")
+	public List<String> getStop() {
+		LiusySocketServer.getLss()._stop();
+		String status = LiusySocketServer.getLss().getStatus();
+		List<String> list = new ArrayList<String>();
+		list.add("status:" + status);
+		return list;
+	}
+	
+	
 	@POST
 	// @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_ATOM_XML })
 	// @Consumes(MediaType.MULTIPART_FORM_DATA)

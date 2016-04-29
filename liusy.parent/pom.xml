@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>cn.shuyouliu</groupId>
 	<artifactId>liusy.parent</artifactId>
-	<version>0.0.1-SNAPSHOT</version> 
+	<version>0.0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<properties>
 		<spring.version>3.2.6.RELEASE</spring.version>
@@ -82,6 +82,8 @@
 		<module>../liusy.socket</module>
 		<module>../liusy.upload.api</module>
 	</modules>
+
+	
 
 
 </project>

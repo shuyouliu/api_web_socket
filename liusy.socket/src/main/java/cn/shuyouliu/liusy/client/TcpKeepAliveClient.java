@@ -5,6 +5,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.util.Arrays;
+
+import cn.shuyouliu.liusy.oper.PackUtils;
 
 public class TcpKeepAliveClient {
 
@@ -32,7 +35,7 @@ public class TcpKeepAliveClient {
 
 		try {
 
-			if (socket == null || socket.isClosed() || !socket.isConnected()) {
+			//if (socket == null || socket.isClosed() || !socket.isConnected()) {
 
 				socket = new Socket();
 
@@ -43,16 +46,36 @@ public class TcpKeepAliveClient {
 				socket.setSoTimeout(timeout);
 
 				System.out.println("TcpKeepAliveClientnew ");
-
-			}
+				//socket.close();
+			//}
 
 			input = socket.getInputStream();
 
+			String str = "{type:ping}";
+			int len = 4;
 			output = socket.getOutputStream();
+			
+			byte[] receiveBytes = new byte[1024];// 收到的包字节数组
+			
+			byte[] x = PackUtils.intToBytes2(str.length());
+			for (int i = 0; i < x.length; i++) {
+				receiveBytes[i] = x[i];
+			}
+			byte[] y = str.getBytes("utf-8");
+			for (int i = 0; i < y.length; i++) {
+				receiveBytes[4+i] = y[i];
+			}
+			len += y.length;
+			
+			output.write(receiveBytes, 0, len);
 
+			output.flush();
+			
+			
+			
 			// read body
 
-			byte[] receiveBytes = {};// 收到的包字节数组
+			//byte[] receiveBytes = {};// 收到的包字节数组
 
 			while (true) {
 
@@ -64,11 +87,12 @@ public class TcpKeepAliveClient {
 
 					// send
 
+					System.out.println( Arrays.toString( receiveBytes));
 					System.out.println("TcpKeepAliveClientsend date :" + new String(receiveBytes));
 
-					output.write(receiveBytes, 0, receiveBytes.length);
+					//output.write(receiveBytes, 0, receiveBytes.length);
 
-					output.flush();
+					//output.flush();
 
 				}
 
@@ -85,8 +109,13 @@ public class TcpKeepAliveClient {
 	}
 
 	public static void main(String[] args) throws Exception {
-		TcpKeepAliveClient client = new TcpKeepAliveClient("127.0.0.1", 8002);
-		client.receiveAndSend();
+		//http://115.28.52.132/liusy/index/start
+		//for (int i = 0 ; i < 10000 ; i ++){
+			TcpKeepAliveClient client = new TcpKeepAliveClient("qinxin.chinacloudapp.cn", 3016);//115.28.52.132
+			client.receiveAndSend();
+			Thread.sleep(1000);
+		//}
+		
 	}
 
 }

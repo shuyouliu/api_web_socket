@@ -2,11 +2,14 @@ package cn.shuyouliu.liusy.oper;
 
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
+import java.util.Arrays;
 
 import org.apache.mina.core.buffer.IoBuffer;
 import org.apache.mina.core.session.IoSession;
 import org.apache.mina.filter.codec.CumulativeProtocolDecoder;
 import org.apache.mina.filter.codec.ProtocolDecoderOutput;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import cn.shuyouliu.liusy.entity.Message;
 
@@ -17,6 +20,7 @@ import cn.shuyouliu.liusy.entity.Message;
  */
 
 public class MyProtocalDecoder extends CumulativeProtocolDecoder {
+	private static final Logger logger = LoggerFactory.getLogger(MyProtocalDecoder.class);
 	private final String charset;
 
 	public MyProtocalDecoder(String charset) {
@@ -28,50 +32,44 @@ public class MyProtocalDecoder extends CumulativeProtocolDecoder {
 	 * 下面这个方法注意返回值，返回true表示已经够一个对象了，转交给hander处理 返回false表示数据不够，等待下一个数据包到达后一起处理。
 	 */
 	protected boolean doDecode(IoSession session, IoBuffer in, ProtocolDecoderOutput out) throws Exception {
-		System.out.println("进入decode");
+		logger.debug("run in ... decode");
 		CharsetDecoder decoder = Charset.forName(charset).newDecoder();
 		int smsLength = 0;
 		int pos = in.position();
-		System.out.println("limit:" + in.limit());
+		logger.debug("limit:" + in.limit());
 		int remaining = in.remaining();
-		System.out.println("remaining:" + remaining);
+		logger.debug("remaining:" + remaining);
 		try {
-
 			// 判断长度4位 可配置
 			if (remaining < 4) {
 				in.position(pos);
 				// in.limit(limit);
 				return false;
 			}
-
+			
+			byte [] b4 = new byte[4];
+			in.get(b4);
+			logger.debug(" 4 start : "+Arrays.toString( b4));
+			smsLength = PackUtils.bytesToInt2(b4, 0);
 			// 判断是否够解析出的长度
-			smsLength = in.getInt();
-			System.out.println(smsLength);
+			logger.debug("smsLength "+ smsLength);
 			if (remaining < smsLength || smsLength < 0) {
 				in.position(pos);
 				return false;
 			}
+			byte [] dst = new byte[remaining];
+			//in.position(4);
+			in.get(dst,0,smsLength);
+			logger.debug(" sms data : "+Arrays.toString( dst));
 			Message mes = new Message();
-			int alonght = in.getInt(0);
-			System.out.println("alongth:" + alonght);
-			mes.setAlonght(alonght);
-			int namelongth = in.getInt();
-			System.out.println("namelonth:" + namelongth);
-			mes.setImagelongth(namelongth);
-			String name = in.getString(namelongth, decoder);
-			System.out.println("name:" + name);
-			mes.setImagename(name);
-			long imagelongth = in.getLong();
-			System.out.println("imagelongth:" + imagelongth);
-			mes.setImagelongth(imagelongth);
-			byte[] image = new byte[(int) imagelongth];
-			in.get(image);
-			mes.setImage(image);
+			mes.setMsg(new String(dst));
+			logger.debug(mes.getMsg());
 			out.write(mes);
-
 		} catch (Exception e) {
 			in.position(pos);
 			// in.limit(limit);
+			e.printStackTrace();
+			logger.debug("error:"+e.getMessage());
 			return false;
 		}
 		return true;
